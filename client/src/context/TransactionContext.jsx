@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Web3 } from "web3";
-import { ZKsyncPlugin, ZKsyncWallet } from "web3-plugin-zksync";
+import { ZKsyncPlugin} from "web3-plugin-zksync";
 
 import { contractABI, contractAddress } from "../utils/constants";
 
@@ -59,25 +59,6 @@ export const TransactionsProvider = ({ children }) => {
     }
   };
 
-  const estimateTransactionCost = async () => {
-    if (!web3 || !contract) throw new Error("Web3 or Contract is not initialized");
-    
-    const { addressTo, amount, gmail, message } = formData;
-    
-    const gasPrice = await web3.eth.getGasPrice();
-    console.log("Current gas price:", web3.utils.fromWei(gasPrice, 'gwei'), "Gwei");
-    const gasLimit = await contract.methods.addToBlockchain(
-      addressTo, 
-      web3.utils.toWei(amount, "ether"), 
-      message, 
-      gmail
-    ).estimateGas({from: currentAccount});
-
-    const gasCost = BigInt(gasPrice) * BigInt(gasLimit);
-    const gasCostEth = web3.utils.fromWei(gasCost.toString(), 'ether');
-
-    return gasCostEth;
-  };
 
   const sendTransaction = async () => {
     setError(null);
@@ -91,7 +72,8 @@ export const TransactionsProvider = ({ children }) => {
       console.log("Current account:", currentAccount);
 
       const networkId = await web3.eth.net.getId();
-      if (networkId !== 280) { // ZKSync Era Testnet network ID
+      console.log("Current network ID:", networkId);
+      if (networkId !== 300n) { // ZKSync Era Testnet network ID
         throw new Error(`Wrong network. Please connect to ZKSync Era Testnet.`);
       }
 
@@ -178,20 +160,7 @@ export const TransactionsProvider = ({ children }) => {
     }
   };
 
-  const getAddressBalance = async (address) => {
-    if (!web3) throw new Error("Web3 is not initialized");
-    
-    try {
-      const balanceWei = await web3.eth.getBalance(address);
-      const balanceEth = web3.utils.fromWei(balanceWei, 'ether');
-      console.log(`Balance of ${address}:`, balanceEth, "ETH");
-      return balanceEth;
-      
-    } catch (error) {
-      console.error("Error fetching address balance:", error);
-      throw error;
-    }
-  };
+ 
 
   return (
     <TransactionContext.Provider

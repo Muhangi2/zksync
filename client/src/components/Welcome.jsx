@@ -45,7 +45,7 @@ const Welcome = () => {
       <div className="flex mf:flex-row flex-col items-start justify-between md:p-20 py-12 px-4">
         <div className="flex flex-1 justify-start items-start flex-col mf:mr-10">
           <h1 className="text-3xl sm:text-5xl text-white text-gradient py-1">
-            Send SWTR Crypto <br /> across the world
+            Send Eth Crypto <br />  on Zksync network across the world
           </h1>
           <p className="text-left mt-5 text-white font-light md:w-9/12 w-11/12 text-base">
             Explore the crypto world.Make Sure you are conncted to the SWTR network before you send SWTR cryptocurrency.
@@ -104,7 +104,7 @@ const Welcome = () => {
           </div>
           <div className="p-5 sm:w-96 w-full flex flex-col justify-start items-center blue-glassmorphism">
             <Input placeholder="Address To" name="addressTo" type="text" handleChange={handleChange} />
-            <Input placeholder="Amount (SWTR)" name="amount" type="number" handleChange={handleChange} />
+            <Input placeholder="Amount (ETH)" name="amount" type="number" handleChange={handleChange} />
             <Input placeholder="gmail" name="gmail" type="email" handleChange={handleChange} />
             <Input placeholder="Enter Message" name="message" type="text" handleChange={handleChange} />
 
