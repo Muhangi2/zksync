@@ -58,7 +58,7 @@ export const TransactionsProvider = ({ children }) => {
       setBalance(balanceEth);
     }
   };
-
+  
 
   const sendTransaction = async () => {
     setError(null);
@@ -83,12 +83,18 @@ export const TransactionsProvider = ({ children }) => {
       const gasPrice = await web3.eth.getGasPrice();
       console.log("Current gas price:", web3.utils.fromWei(gasPrice, 'gwei'), "Gwei");
 
-      const gasLimit = await contract.methods.addToBlockchain(
-        addressTo, 
-        web3.utils.toWei(amount, "ether"), 
-        message, 
-        gmail
-      ).estimateGas({from: currentAccount});
+      // Create transaction object for sending ETH
+      const txObject = {
+        from: currentAccount,
+        to: addressTo,
+        value: web3.utils.toWei(amount, "ether"),
+        gasPrice: gasPrice
+      };
+
+      // Estimate gas
+      const gasLimit = await web3.eth.estimateGas(txObject);
+      txObject.gas = gasLimit;
+
       console.log("Estimated gas limit:", gasLimit);
 
       const txCost = BigInt(gasPrice) * BigInt(gasLimit);
@@ -99,19 +105,21 @@ export const TransactionsProvider = ({ children }) => {
       }
 
       console.log("Sending transaction...");
-      const receipt = await contract.methods.addToBlockchain(
+      const receipt = await web3.eth.sendTransaction(txObject);
+
+      console.log(`Transaction confirmed in block ${receipt.blockNumber}`);
+      console.log("Transaction receipt:", receipt);
+
+      // Add transaction to blockchain through smart contract
+      await contract.methods.addToBlockchain(
         addressTo, 
         web3.utils.toWei(amount, "ether"), 
         message, 
         gmail
       ).send({ 
         from: currentAccount,
-        gasPrice: gasPrice,
-        gas: gasLimit
+        gasPrice: gasPrice
       });
-
-      console.log(`Transaction confirmed in block ${receipt.blockNumber}`);
-      console.log("Transaction receipt:", receipt);
       
       setIsLoading(false);
       updateBalance();
